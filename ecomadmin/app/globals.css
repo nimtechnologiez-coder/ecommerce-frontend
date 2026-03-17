@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #BFFCF6;
+  --color-primary-hover: #A5F0E8;
+  --color-primary-dark: #1e6e64; /* Keep a dark teal for text contrast on mint backgrounds */
+  --color-slate-800: #E0F7F5; /* Very light mint for borders */
+  --color-slate-900: #0f172a; /* Dark text */
+  --color-slate-950: #ffffff; /* White background */
+}
+
+@layer base {
+  body {
+    @apply bg-white text-slate-900 antialiased min-h-screen;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+}
+
+@layer components {
+  .admin-main-container {
+    @apply w-full max-w-7xl mx-auto px-6 py-8 lg:px-12 lg:py-12;
+  }
+
+  .card {
+    @apply bg-white border border-slate-200 rounded-2xl p-6 transition-all duration-300 hover:border-primary/50 hover:shadow-xl hover:shadow-primary/20;
+  }
+
+  .heading-xl {
+    @apply text-4xl lg:text-5xl font-black tracking-tight text-slate-900 mb-2;
+  }
+
+  .input-field {
+    @apply w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all;
+  }
+
+  .btn-primary {
+    @apply px-6 py-3 rounded-xl bg-primary text-slate-900 text-sm font-bold hover:bg-primary-hover active:scale-95 transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2;
+  }
+}
