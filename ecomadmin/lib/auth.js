@@ -1,8 +1,5 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import bcrypt from "bcryptjs";
-import dbConnect from "@/lib/db";
-import User from "@/lib/models/User";
 import authConfig from "./auth.config";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
@@ -16,6 +13,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             },
             async authorize(credentials) {
                 if (!credentials?.email || !credentials?.password) return null;
+                
+                // Dynamic imports to keep these out of the Edge runtime
+                const bcrypt = await import("bcryptjs");
+                const dbConnect = (await import("@/lib/db")).default;
+                const User = (await import("@/lib/models/User")).default;
+                
                 await dbConnect();
                 const user = await User.findOne({ email: credentials.email });
 
