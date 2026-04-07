@@ -8,7 +8,7 @@ import { Car, Eye, EyeOff, ArrowRight, CheckCircle } from "lucide-react";
 function LoginForm() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const isRegistered = searchParams.get("registered");
+    const isRegistered = searchParams?.get("registered");
 
     const { data: session, status } = useSession();
     const [form, setForm] = useState({ email: "", password: "" });

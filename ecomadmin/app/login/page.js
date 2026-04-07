@@ -7,7 +7,7 @@ import Link from "next/link";
 function LoginForm() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const signupSuccess = searchParams.get("signup") === "success";
+    const signupSuccess = searchParams?.get("signup") === "success";
     const [form, setForm] = useState({ email: "", password: "" });
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
