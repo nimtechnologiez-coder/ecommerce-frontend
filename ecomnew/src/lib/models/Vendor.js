@@ -1,8 +1,8 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose from "mongoose";
 
-const VendorSchema = new Schema(
+const VendorSchema = new mongoose.Schema(
     {
-        userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
         businessName: { type: String, required: true },
         kycStatus: { type: String, enum: ["PENDING", "APPROVED", "REJECTED"], default: "PENDING" },
         kycDocs: {
@@ -13,14 +13,21 @@ const VendorSchema = new Schema(
             businessRegUrl: { type: String },
         },
         adminRemarks: { type: String },
+        walletBalance: { type: Number, default: 0 },
+        pendingBalance: { type: Number, default: 0 },
+        // New display fields for profile
         storeLogo: { type: String },
         storeBanner: { type: String },
         description: { type: String },
         storeAnnouncement: { type: String },
-        walletBalance: { type: Number, default: 0 },
-        pendingBalance: { type: Number, default: 0 },
+        socialLinks: {
+            whatsapp: { type: String },
+            facebook: { type: String },
+            instagram: { type: String }
+        }
     },
     { timestamps: true }
 );
 
-export default mongoose.models.Vendor || mongoose.model("Vendor", VendorSchema);
+const Vendor = mongoose.models.Vendor || mongoose.model("Vendor", VendorSchema);
+export default Vendor;

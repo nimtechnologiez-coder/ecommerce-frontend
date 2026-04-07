@@ -1,8 +1,8 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose from "mongoose";
 
-const VendorSchema = new Schema(
+const VendorSchema = new mongoose.Schema(
     {
-        userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
         businessName: { type: String, required: true },
         kycStatus: { type: String, enum: ["PENDING", "APPROVED", "REJECTED"], default: "PENDING" },
         kycDocs: {
@@ -19,4 +19,5 @@ const VendorSchema = new Schema(
     { timestamps: true }
 );
 
-export default mongoose.models.Vendor || mongoose.model("Vendor", VendorSchema);
+const Vendor = mongoose.models.Vendor || mongoose.model("Vendor", VendorSchema);
+export default Vendor;

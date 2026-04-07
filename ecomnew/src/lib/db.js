@@ -1,7 +1,7 @@
+import mongoose from "mongoose";
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
-// Build-time guard: prevent connection attempts or library loads during the Next.js build phase
 if (!MONGODB_URI && process.env.NEXT_PHASE !== "phase-production-build") {
   throw new Error("Please define MONGODB_URI in .env.local");
 }
@@ -16,12 +16,22 @@ async function dbConnect() {
   if (cached.conn) return cached.conn;
 
   if (!cached.promise) {
-    // Dynamic import inside the function to keep 'mongoose' out of the Edge Runtime
-    const mongoose = (await import("mongoose")).default;
-    cached.promise = mongoose.connect(MONGODB_URI, { bufferCommands: false });
+    const opts = {
+      bufferCommands: false,
+    };
+
+    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
+      return mongoose;
+    });
   }
 
-  cached.conn = await cached.promise;
+  try {
+    cached.conn = await cached.promise;
+  } catch (e) {
+    cached.promise = null;
+    throw e;
+  }
+
   return cached.conn;
 }
 

@@ -1,6 +1,6 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose from "mongoose";
 
-const UserSchema = new Schema(
+const UserSchema = new mongoose.Schema(
     {
         name: { type: String, required: true },
         email: { type: String, required: true, unique: true },
@@ -8,7 +8,7 @@ const UserSchema = new Schema(
         role: { type: String, enum: ["CUSTOMER", "VENDOR", "ADMIN"], default: "CUSTOMER" },
         phone: { type: String },
         lastLogin: { type: Date },
-        wishlist: [{ type: Schema.Types.ObjectId, ref: "Product" }],
+        wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
         addresses: [
             {
                 name: { type: String, required: true },
@@ -22,4 +22,5 @@ const UserSchema = new Schema(
     { timestamps: true }
 );
 
-export default mongoose.models.User || mongoose.model("User", UserSchema);
+const User = mongoose.models.User || mongoose.model("User", UserSchema);
+export default User;
