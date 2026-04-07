@@ -1,5 +1,0 @@
-{
-  "buildCommand": "cd ecomnew && npm run build",
-  "installCommand": "cd ecomnew && npm install",
-  "outputDirectory": "ecomnew/.next"
-}
