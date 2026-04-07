@@ -32,3 +32,7 @@ yarn-error.log*
 # IDEs
 .vscode/
 .idea/
+
+# Projects
+backend/
+ecomefrontend/
