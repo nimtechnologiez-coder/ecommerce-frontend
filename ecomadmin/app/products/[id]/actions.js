@@ -1,19 +1,17 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import dbConnect from "@/lib/db";
-import Product from "@/lib/models/Product";
-import { auth } from "@/lib/auth";
-import User from "@/lib/models/User";
 
 /**
  * Approve or reject a product listing
- * @param {string} productId
- * @param {"LIVE" | "REJECTED"} status
- * @param {string} [adminRemarks]
  */
 export async function reviewProduct(productId, status, adminRemarks = "") {
     try {
+        const { auth } = await import("@/lib/auth");
+        const dbConnect = (await import("@/lib/db")).default;
+        const Product = (await import("@/lib/models/Product")).default;
+        const User = (await import("@/lib/models/User")).default;
+
         const session = await auth();
         if (!session?.user?.email) {
             return { success: false, error: "Unauthorized" };
@@ -24,10 +22,6 @@ export async function reviewProduct(productId, status, adminRemarks = "") {
         const adminUser = await User.findOne({ email: session.user.email });
         if (!adminUser || adminUser.role !== "ADMIN") {
             return { success: false, error: "Forbidden: Admin access required" };
-        }
-
-        if (!["LIVE", "REJECTED", "PENDING", "DRAFT"].includes(status)) {
-            return { success: false, error: "Invalid status" };
         }
 
         const product = await Product.findByIdAndUpdate(
@@ -52,6 +46,11 @@ export async function reviewProduct(productId, status, adminRemarks = "") {
 
 export async function updateProduct(productId, formData) {
     try {
+        const { auth } = await import("@/lib/auth");
+        const dbConnect = (await import("@/lib/db")).default;
+        const Product = (await import("@/lib/models/Product")).default;
+        const User = (await import("@/lib/models/User")).default;
+
         const session = await auth();
         if (!session?.user?.email) {
             return { success: false, error: "Unauthorized" };

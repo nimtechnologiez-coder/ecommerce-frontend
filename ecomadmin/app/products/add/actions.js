@@ -1,13 +1,14 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import dbConnect from "@/lib/db";
-import Product from "@/lib/models/Product";
-import User from "@/lib/models/User";
-import { auth } from "@/lib/auth";
 
 export async function addProduct(formData) {
     try {
+        const { auth } = await import("@/lib/auth");
+        const dbConnect = (await import("@/lib/db")).default;
+        const Product = (await import("@/lib/models/Product")).default;
+        const User = (await import("@/lib/models/User")).default;
+
         const session = await auth();
         
         if (!session?.user?.email) {
@@ -37,7 +38,7 @@ export async function addProduct(formData) {
 
         const placeholderImage = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random&size=400`;
 
-        const newProduct = await Product.create({
+        await Product.create({
             name,
             description,
             brand,

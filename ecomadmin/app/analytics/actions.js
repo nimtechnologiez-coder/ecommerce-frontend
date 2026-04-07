@@ -1,9 +1,11 @@
 "use server";
-import dbConnect from "@/lib/db";
-import Order from "@/lib/models/Order";
 
 export async function getDashboardAnalytics() {
     try {
+        // Dynamic imports for analytics logic
+        const dbConnect = (await import("@/lib/db")).default;
+        const Order = (await import("@/lib/models/Order")).default;
+
         await dbConnect();
         
         // Get sales data for the last 7 days
@@ -29,9 +31,7 @@ export async function getDashboardAnalytics() {
 
         // Get order status distribution
         const statusDistribution = await Order.aggregate([
-            {
-                $unwind: "$vendorOrders"
-            },
+            { $unwind: "$vendorOrders" },
             {
                 $group: {
                     _id: "$vendorOrders.status",

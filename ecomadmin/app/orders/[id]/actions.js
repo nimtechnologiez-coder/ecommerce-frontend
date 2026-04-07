@@ -1,16 +1,18 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import dbConnect from "@/lib/db";
-import Order from "@/lib/models/Order";
-import { auth } from "@/lib/auth";
-import User from "@/lib/models/User";
 
 /**
  * Updates an order's payment or delivery status
  */
 export async function updateOrderStatus(orderId, status, type = "paymentStatus") {
     try {
+        // Dynamic imports for Server-only logic
+        const { auth } = await import("@/lib/auth");
+        const dbConnect = (await import("@/lib/db")).default;
+        const Order = (await import("@/lib/models/Order")).default;
+        const User = (await import("@/lib/models/User")).default;
+
         const session = await auth();
         if (!session?.user?.email) {
             return { success: false, error: "Unauthorized" };

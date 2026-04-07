@@ -1,19 +1,19 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import dbConnect from "@/lib/db";
-import Return from "@/lib/models/Return";
-import User from "@/lib/models/User";
-import Order from "@/lib/models/Order";
-import { auth } from "@/lib/auth";
 
 /**
  * Updates a return request's status and automatically refunds the order if approved.
- * @param {string} returnId - The ID of the return request.
- * @param {string} status - The new status (APPROVED or REJECTED).
  */
 export async function updateReturnStatus(returnId, status) {
     try {
+        // Dynamic imports for database-related models/logic
+        const { auth } = await import("@/lib/auth");
+        const dbConnect = (await import("@/lib/db")).default;
+        const Return = (await import("@/lib/models/Return")).default;
+        const User = (await import("@/lib/models/User")).default;
+        const Order = (await import("@/lib/models/Order")).default;
+
         const session = await auth();
         
         if (!session?.user?.email) {
@@ -22,10 +22,9 @@ export async function updateReturnStatus(returnId, status) {
 
         await dbConnect();
         
-        // Ensure the current user is an admin
         const currentUser = await User.findOne({ email: session.user.email });
         if (!currentUser || currentUser.role !== "ADMIN") {
-            return { success: false, error: `Unauthorized: Only administrators can update return status.` };
+            return { success: false, error: "Unauthorized: Only administrators can update return status." };
         }
 
         if (!["APPROVED", "REJECTED"].includes(status)) {
@@ -48,7 +47,7 @@ export async function updateReturnStatus(returnId, status) {
         }
 
         revalidatePath("/refunds");
-        revalidatePath("/orders"); // In case the order's payment status changed
+        revalidatePath("/orders");
 
         return { success: true, message: `Return request successfully ${status.toLowerCase()}.` };
     } catch (error) {
